@@ -4,13 +4,13 @@ import android.content.res.AssetManager
 import android.content.res.XModuleResources
 import android.util.Log
 
+import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.IXposedHookInitPackageResources
+import de.robv.android.xposed.callbacks.XC_LoadPackage
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
-import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 class Main: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
     companion object {
@@ -64,9 +64,6 @@ class Main: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackag
                 Log.i("Enmity", "Attempting to inject bundle...")
 
                 try {
-                    // TODO: Create module wrapped in __d and execute
-                    // Utilities.createModule("alert('hi')", 9000)
-
                     XposedBridge.invokeOriginalMethod(
                         loadScriptFromAssets,
                         param.thisObject,
