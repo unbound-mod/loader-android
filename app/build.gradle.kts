@@ -11,32 +11,37 @@ android {
         applicationId = "app.enmity.xposed"
         minSdk = 24
         targetSdk = 33
-        versionCode = 2
-        versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        versionCode = 6
+        versionName = "1.0.0"
     }
 
     buildTypes {
-        release {
+        debug {
+            isDebuggable = true
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+        }
+        release {
+            isDebuggable = false
+            isMinifyEnabled = false
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs += "-Xcontext-receivers"
     }
+
+    namespace = "app.enmity.xposed"
 }
 
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
-    compileOnly(libs.xposed.api)
+
+    compileOnly("de.robv.android.xposed:api:82")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 }

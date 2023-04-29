@@ -6,6 +6,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = "Enmity Xposed"
+rootProject.name = "Enmity"
 include(":app")
- 

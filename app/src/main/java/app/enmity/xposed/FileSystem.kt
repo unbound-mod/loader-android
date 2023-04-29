@@ -1,18 +1,14 @@
 package app.enmity.xposed
 
 import android.content.res.XModuleResources
+import app.enmity.xposed.Main
+import android.util.Log
 
 class FileSystem {
     companion object {
-        private lateinit var resources: XModuleResources
-
-        fun setResources(assets: XModuleResources) {
-            resources = assets
-        }
-
         fun getAsset(file: String): String {
-            val asset = resources.assets.open(file)
-            return asset.bufferedReader().use { it.readText() }
+            val stream = Main.Companion.resources.assets.open(file)
+            return stream.bufferedReader().use { it.readText() }
         }
     }
 }

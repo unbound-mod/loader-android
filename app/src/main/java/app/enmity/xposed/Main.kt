@@ -13,8 +13,12 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 class Main: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
+    companion object {
+        lateinit var resources: XModuleResources
+    }
+
     override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
-        FileSystem.setResources(XModuleResources.createInstance(startupParam.modulePath, null))
+        resources = XModuleResources.createInstance(startupParam.modulePath, null)
     }
 
     override fun handleInitPackageResources(resparam: XC_InitPackageResources.InitPackageResourcesParam) {
@@ -32,27 +36,47 @@ class Main: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackag
             String::class.java,
             String::class.java,
             Boolean::class.javaPrimitiveType
-        )
+        ).apply { isAccessible = true }
 
         val loadScriptFromAssets = instance.getDeclaredMethod(
             "jniLoadScriptFromAssets",
             AssetManager::class.java,
             String::class.java,
             Boolean::class.javaPrimitiveType
-        )
+        ).apply { isAccessible = true }
+
+        XposedBridge.hookMethod(loadScriptFromFile, object : XC_MethodHook() {
+            override fun beforeHookedMethod(param: MethodHookParam) {
+                try {
+                    XposedBridge.invokeOriginalMethod(
+                        loadScriptFromAssets,
+                        param.thisObject,
+                        arrayOf(resources.assets, "assets://js/modules.js", false)
+                    )
+                } catch (e: Throwable) {
+                    Log.wtf("Enmity", "Failed to execute modules patch: " + e)
+                }
+            }
+        })
 
         XposedBridge.hookMethod(loadScriptFromFile, object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam) {
-                super.afterHookedMethod(param)
+                Log.i("Enmity", "Attempting to inject bundle...")
 
-                Log.i("Enmity", "Called loadScriptFromFile")
-            }
-        })
-        XposedBridge.hookMethod(loadScriptFromAssets, object : XC_MethodHook() {
-            override fun afterHookedMethod(param: MethodHookParam) {
-                super.afterHookedMethod(param)
+                try {
+                    // TODO: Create module wrapped in __d and execute
+                    // Utilities.createModule("alert('hi')", 9000)
 
-                Log.i("Enmity", "Called loadScriptFromAssets")
+                    XposedBridge.invokeOriginalMethod(
+                        loadScriptFromAssets,
+                        param.thisObject,
+                        arrayOf(resources.assets, "assets://js/bundle.js", false)
+                    )
+
+                    Log.i("Enmity", "Bundle injected.")
+                } catch (e: Throwable) {
+                    Log.wtf("Enmity", "Failed to inject bundle: " + e)
+                }
             }
         })
 
