@@ -41,7 +41,6 @@ android {
 
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
-
+    implementation("com.google.code.gson:gson:latest.release")
     compileOnly("de.robv.android.xposed:api:82")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 }

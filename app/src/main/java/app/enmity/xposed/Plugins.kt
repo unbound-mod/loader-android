@@ -1,15 +1,11 @@
 package app.enmity.xposed
 
-import android.content.pm.ApplicationInfo
+class Plugins : Manager() {
+    init {
+        this.initialize()
+    }
 
-class Plugins {
-    companion object {
-        fun initialize(info: ApplicationInfo) {
-
-        }
-
-        fun getPlugins(): String {
-            return "{}"
-        }
+    override fun getType(): String {
+        return "Plugins"
     }
 }

@@ -1,15 +1,19 @@
 package app.enmity.xposed
 
-import android.content.pm.ApplicationInfo
+class Themes : Manager() {
+    init {
+        this.initialize()
+    }
 
-class Themes {
-    companion object {
-        fun initialize(info: ApplicationInfo) {
+    override fun getType(): String {
+        return "Themes"
+    }
 
-        }
+    override fun getExtension(): String {
+        return ".json"
+    }
 
-        fun getThemes(): String {
-            return "[]"
-        }
+    override fun handleBundle(bundle: String): Any {
+        return Enmity.gson.fromJson(bundle, Object::class.java)
     }
 }

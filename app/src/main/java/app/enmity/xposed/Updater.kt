@@ -1,11 +1,9 @@
 package app.enmity.xposed
 
-import java.net.URL
-
 class Updater {
     companion object {
         fun hasUpdate(): Boolean {
-            if (Settings.get("enmity", "loader.update.force", false) as Boolean) {
+            if (Enmity.settings.get("enmity", "loader.update.force", false) as Boolean) {
                 return true
             }
 
@@ -13,7 +11,7 @@ class Updater {
         }
 
         fun getDownloadURL(): String {
-            return Settings.get("enmity", "loader.update.url", "https://raw.githubusercontent.com/enmity-mod/enmity/main/dist/bundle.js") as String
+            return Enmity.settings.get("enmity", "loader.update.url", "https://raw.githubusercontent.com/enmity-mod/enmity/main/dist/bundle.js") as String
         }
     }
 }

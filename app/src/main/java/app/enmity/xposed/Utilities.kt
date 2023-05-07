@@ -3,11 +3,11 @@ package app.enmity.xposed
 class Utilities {
     companion object {
         fun usePreload(): String {
-            var template = FileSystem.getAsset("js/preload.js")
+            var template = Enmity.fs.getAsset("js/preload.js")
 
-            template = template.replace("#settings#", Settings.getSettings())
-            template = template.replace("#plugins#", Plugins.getPlugins())
-            template = template.replace("#themes#", Themes.getThemes())
+            template = template.replace("#settings#", Enmity.settings.getSettings())
+            template = template.replace("#plugins#", Enmity.plugins.getAddons())
+            template = template.replace("#themes#", Enmity.themes.getAddons())
 
             return Cache.writeFile("preload.js", template)
         }

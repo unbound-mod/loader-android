@@ -1,41 +1,51 @@
 package app.enmity.xposed
 
+import android.content.pm.ApplicationInfo
 import android.content.res.AssetManager
 import android.content.res.XModuleResources
-import android.content.pm.ApplicationInfo
 import android.util.Log
-
-import de.robv.android.xposed.callbacks.XC_InitPackageResources
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import de.robv.android.xposed.IXposedHookInitPackageResources
-import de.robv.android.xposed.callbacks.XC_LoadPackage
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
+import de.robv.android.xposed.callbacks.XC_InitPackageResources
+import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
     companion object {
+        var gson: Gson = GsonBuilder().setPrettyPrinting().create()
+
         lateinit var resources: XModuleResources
-        lateinit var appInfo: ApplicationInfo
+        lateinit var info: ApplicationInfo
+
+        lateinit var fs: FileSystem
+        lateinit var settings: Settings
+        lateinit var cache: Cache
+
+        lateinit var plugins: Plugins
+        lateinit var themes: Themes
     }
 
-    override fun initZygote(param: IXposedHookZygoteInit.StartupParam) {
-        resources = XModuleResources.createInstance(param.modulePath, null)
-    }
+    private fun initialize() {
+        fs = FileSystem()
+        settings = Settings()
+        cache = Cache()
 
-    override fun handleInitPackageResources(resparam: XC_InitPackageResources.InitPackageResourcesParam) {
-        if (resparam.packageName == "com.google.android.webview") return
+        plugins = Plugins()
+        themes = Themes()
     }
 
     override fun handleLoadPackage(param: XC_LoadPackage.LoadPackageParam) = with(param) {
         if (packageName == "com.google.android.webview") return
 
-        FileSystem.initialize(appInfo)
-        Settings.initialize(appInfo)
-        Cache.initialize(appInfo)
+        info = appInfo
+        initialize()
 
         // Don't load bundle if not configured to do so.
-        if (!(Settings.get("enmity", "loader.enabled", true) as Boolean)) {
+        if (!(settings.get("enmity", "loader.enabled", true) as Boolean)) {
             Log.i("Enmity", "Loader is disabled, skipping injection.")
             return
         }
@@ -73,7 +83,7 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
                 }
 
                 // Inject React DevTools if its enabled
-                if ((Settings.get("enmity", "loader.devtools", false) as Boolean)) {
+                if ((settings.get("enmity", "loader.devtools", false) as Boolean)) {
                     try {
                         Log.i("Enmity", "Attempting to execute DevTools bundle...")
 
@@ -91,7 +101,7 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
 
                 try {
                     Log.i("Enmity", "Pre-loading settings, plugins and themes...")
-                    var bundle = Utilities.usePreload()
+                    val bundle = Utilities.usePreload()
 
                     XposedBridge.invokeOriginalMethod(
                         loadScriptFromFile,
@@ -101,6 +111,7 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
 
                     Log.i("Enmity", "Pre-loaded settings, plugins and themes.")
                 } catch (e: Throwable) {
+                    Log.wtf("Enmity", e)
                     Log.wtf("Enmity", "Failed to pre-load settings, plugins and themes. $e")
                 }
             }
@@ -125,5 +136,13 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
         })
 
         return@with
+    }
+
+    override fun initZygote(param: IXposedHookZygoteInit.StartupParam) {
+        resources = XModuleResources.createInstance(param.modulePath, null)
+    }
+
+    override fun handleInitPackageResources(resparam: XC_InitPackageResources.InitPackageResourcesParam) {
+        if (resparam.packageName == "com.google.android.webview") return
     }
 }
