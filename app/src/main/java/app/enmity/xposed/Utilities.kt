@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.util.Log
+import com.github.ajalt.colormath.Color
+import com.github.ajalt.colormath.parseOrNull
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
@@ -28,16 +30,6 @@ class Utilities(param: XC_LoadPackage.LoadPackageParam) {
     }
 
     companion object {
-        fun usePreload(): String {
-            var template = Enmity.fs.getAsset("js/preload.js")
-
-            template = template.replace("#settings#", Enmity.settings.getSettings())
-            template = template.replace("#plugins#", Enmity.plugins.getAddons())
-            template = template.replace("#themes#", Enmity.themes.getAddons())
-
-            return Cache.writeFile("preload.js", template)
-        }
-
         fun alert(description: String) {
             try {
                 val activity = Activities.current.get()
@@ -62,9 +54,14 @@ class Utilities(param: XC_LoadPackage.LoadPackageParam) {
                 Log.wtf("Enmity", "Failed to alert: $e")
             }
         }
+
+        fun parseColor(color: String): Int? {
+            val parsed = Color.parseOrNull(color) ?: return null
+
+            return parsed.toSRGB().toRGBInt().argb.toInt()
+        }
     }
 }
-
 
 class Activities : XC_MethodHook() {
     @Throws(Throwable::class)

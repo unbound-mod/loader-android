@@ -1,6 +1,5 @@
 package app.enmity.xposed
 
-import android.content.pm.ApplicationInfo
 import android.content.res.AssetManager
 import android.content.res.XModuleResources
 import android.util.Log
@@ -23,7 +22,7 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
         var gson: Gson = GsonBuilder().setPrettyPrinting().create()
 
         lateinit var resources: XModuleResources
-        lateinit var info: ApplicationInfo
+        lateinit var info: XC_LoadPackage.LoadPackageParam
 
         lateinit var fs: FileSystem
         lateinit var settings: Settings
@@ -47,7 +46,7 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
     override fun handleLoadPackage(param: XC_LoadPackage.LoadPackageParam) = with(param) {
         if (packageName == "com.google.android.webview") return
 
-        info = appInfo
+        info = param
         initialize(param)
 
         // Don't load bundle if not configured to do so.
@@ -88,7 +87,6 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
                     Log.wtf("Enmity", "Modules patch injection failed, expect issues. $e")
                 }
 
-                // Inject React DevTools if its enabled
                 if ((settings.get("enmity", "loader.devtools", false) as Boolean)) {
                     try {
                         Log.i("Enmity", "Attempting to execute DevTools bundle...")
@@ -107,7 +105,7 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
 
                 try {
                     Log.i("Enmity", "Pre-loading settings, plugins and themes...")
-                    val bundle = Utilities.usePreload()
+                    val bundle = usePreload()
 
                     XposedBridge.invokeOriginalMethod(
                         loadScriptFromFile,
@@ -191,7 +189,30 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
         resources = XModuleResources.createInstance(param.modulePath, null)
     }
 
-    override fun handleInitPackageResources(resparam: XC_InitPackageResources.InitPackageResourcesParam) {
-        if (resparam.packageName == "com.google.android.webview") return
+    override fun handleInitPackageResources(param: XC_InitPackageResources.InitPackageResourcesParam) = with (param) {
+        if (packageName == "com.google.android.webview") return
+
+        val isEnabled = settings.get("enmity", "loader.enabled", true) as Boolean
+        val isInRecovery = settings.get("enmity", "recovery", false) as Boolean
+
+        if (!isEnabled || isInRecovery) return
+
+        Themes.raw.forEach { (key, value) ->
+            try {
+                res.setReplacement("com.discord", "color", key, value)
+            } catch (e: Exception) {
+                Log.wtf("Enmity", "No raw color found for $key")
+            }
+        }
+    }
+
+    fun usePreload(): String {
+        var template = fs.getAsset("js/preload.js")
+
+        template = template.replace("#settings#", settings.getSettings())
+        template = template.replace("#plugins#", plugins.getAddons())
+        template = template.replace("#themes#", themes.getAddons())
+
+        return Cache.writeFile("preload.js", template)
     }
 }

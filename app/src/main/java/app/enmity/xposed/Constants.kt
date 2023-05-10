@@ -1,10 +1,21 @@
 package app.enmity.xposed
 
+import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 
 data class Addon (
     val bundle: Any,
     val manifest: Manifest
+)
+
+data class Theme (
+    val bundle: ThemeJSON,
+    val manifest: Manifest
+)
+
+data class ThemeJSON (
+    @SerializedName("raw") val raw: JsonElement?,
+    @SerializedName("semantic") val semantic: JsonElement?
 )
 
 data class Manifest (
@@ -26,6 +37,8 @@ class Constants {
     companion object {
         const val CLASS = "com.facebook.react.bridge.CatalystInstanceImpl"
         const val ACTIVITY_CLASS = "android.app.Instrumentation"
+        const val LIGHT_THEME = "com.discord.theme.LightTheme"
+        const val DARK_THEME = "com.discord.theme.DarkTheme"
 
         const val FILE_LOAD = "jniLoadScriptFromFile"
         const val ASSET_LOAD = "jniLoadScriptFromAssets"

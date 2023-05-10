@@ -7,7 +7,7 @@ class Settings {
     private var settings: JSONObject
     private var path: String
 
-    fun get(store: String, key: String, default: Any): Any {
+    fun get(store: String, key: String, default: Any?): Any? {
         return try {
             val payload = settings.getJSONObject(store)
 
@@ -36,7 +36,7 @@ class Settings {
     }
 
     init {
-        val folder = File(Enmity.info.dataDir, "files")
+        val folder = File(Enmity.info.appInfo.dataDir, "files")
         val enmity = File(folder, "Enmity")
         val file = File(enmity, "settings.json")
 

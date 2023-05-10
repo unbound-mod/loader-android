@@ -4,7 +4,7 @@ import android.util.Log
 import java.io.File
 
 open class Manager {
-    private var addons: MutableList<Addon> = mutableListOf()
+    var addons: MutableList<Any> = mutableListOf()
 
     fun initialize() {
         val folder = File(Enmity.fs.path, this.getType()).also { it.mkdirs() }
@@ -40,7 +40,7 @@ open class Manager {
 
                 val json = Enmity.gson.fromJson(manifest.readText(), Manifest::class.java)
                 val payload = this.handleBundle(bundle.readText())
-                val addon = Addon(payload, json)
+                val addon = this.process(payload, json)
 
                 addons.add(addon)
             } catch(e: Exception) {
@@ -51,6 +51,10 @@ open class Manager {
 
     fun getAddons(): String {
         return Enmity.gson.toJson(addons)
+    }
+
+    open fun process(payload: Any, json: Manifest): Any {
+        return Addon(payload, json)
     }
 
     open fun handleBundle(bundle: String): Any {

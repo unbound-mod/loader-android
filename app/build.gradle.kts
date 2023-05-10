@@ -41,6 +41,7 @@ android {
 
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
+    implementation("com.github.ajalt.colormath:colormath:latest.release")
     implementation("com.google.code.gson:gson:latest.release")
     compileOnly("de.robv.android.xposed:api:82")
 }

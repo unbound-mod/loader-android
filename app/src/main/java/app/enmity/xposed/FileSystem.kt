@@ -16,7 +16,7 @@ class FileSystem {
      * non-existing directories on android
      */
     init {
-        val files = File(Enmity.info.dataDir, "files").also { it.mkdirs() }.path
+        val files = File(Enmity.info.appInfo.dataDir, "files").also { it.mkdirs() }.path
 
         this.path = File(files, "Enmity").also { it.mkdirs() }.path
 

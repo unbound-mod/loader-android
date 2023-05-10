@@ -4,7 +4,7 @@ import java.io.File
 
 class Cache {
     companion object {
-        private var path: String = File(Enmity.info.dataDir, "cache").also { it.mkdirs() }.toString()
+        private var path: String = File(Enmity.info.appInfo.dataDir, "cache").also { it.mkdirs() }.toString()
 
         fun writeFile(name: String, content: String): String {
             val file = File(path, name)
