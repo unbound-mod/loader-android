@@ -13,10 +13,6 @@ class Cache {
             return file.path
         }
 
-        fun getFile(name: String): File {
-            return File(path, name)
-        }
-
         fun purge() {
             val cache = File(path)
             cache.deleteRecursively()

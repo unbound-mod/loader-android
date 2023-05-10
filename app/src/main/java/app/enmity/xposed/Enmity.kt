@@ -72,7 +72,7 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
             Boolean::class.javaPrimitiveType
         ).apply { isAccessible = true }
 
-        XposedBridge.hookMethod(loadScriptFromFile, object : XC_MethodHook() {
+        val patch = object : XC_MethodHook() {
             override fun beforeHookedMethod(param: MethodHookParam) {
                 try {
                     Log.i("Enmity", "Attempting to execute modules patch...")
@@ -96,7 +96,7 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
                         XposedBridge.invokeOriginalMethod(
                             loadScriptFromAssets,
                             param.thisObject,
-                            arrayOf(resources.assets, "assets://js/devtools.js", true)
+                            arrayOf(resources.assets, "assets://js/devtools.js", false)
                         )
 
                         Log.i("Enmity", "Successfully executed DevTools bundle.")
@@ -117,7 +117,6 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
 
                     Log.i("Enmity", "Pre-loaded settings, plugins and themes.")
                 } catch (e: Throwable) {
-                    Log.wtf("Enmity", e)
                     Log.wtf("Enmity", "Failed to pre-load settings, plugins and themes. $e")
                 }
             }
@@ -180,7 +179,10 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
 
                 Cache.purge()
             }
-        })
+        }
+
+        XposedBridge.hookMethod(loadScriptFromAssets, patch)
+        XposedBridge.hookMethod(loadScriptFromFile, patch)
 
         return@with
     }
