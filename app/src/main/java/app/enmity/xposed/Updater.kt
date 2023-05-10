@@ -7,11 +7,12 @@ class Updater {
                 return true
             }
 
+            // TODO: Implement HEAD ETag fetch logic here
             return true
         }
 
         fun getDownloadURL(): String {
-            return Enmity.settings.get("enmity", "loader.update.url", "https://raw.githubusercontent.com/enmity-mod/enmity/main/dist/bundle.js") as String
+            return Enmity.settings.get("enmity", "loader.update.url", "http://192.168.0.35:8080/bundle.js") as String
         }
     }
 }

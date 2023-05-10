@@ -4,24 +4,25 @@ import org.json.JSONObject
 import java.io.File
 
 class Settings {
-    var settings: JSONObject
-    var path: String
+    private var settings: JSONObject
+    private var path: String
 
     fun get(store: String, key: String, default: Any): Any {
-        try {
+        return try {
             val payload = settings.getJSONObject(store)
 
-            val keys = key.split(".");
+            val keys = key.split(".")
             var result: Any = payload
 
+            @Suppress("NAME_SHADOWING")
             for (key in keys) {
                 val res = (result as JSONObject).get(key)
                 result = res
             }
 
-            return result
+            result
         } catch (e: Exception) {
-            return default
+            default
         }
     }
 
@@ -36,7 +37,7 @@ class Settings {
 
     init {
         val folder = File(Enmity.info.dataDir, "files")
-        var enmity = File(folder, "Enmity")
+        val enmity = File(folder, "Enmity")
         val file = File(enmity, "settings.json")
 
         path = file.path
@@ -46,7 +47,6 @@ class Settings {
         settings = try {
             val payload = file.readText()
 
-//                Enmity.gson.fromJson(payload, Any::class.java)
             JSONObject(payload)
         } catch (e: Exception) {
             JSONObject("{}")

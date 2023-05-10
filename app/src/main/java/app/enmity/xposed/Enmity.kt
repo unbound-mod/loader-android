@@ -13,6 +13,10 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
     companion object {
@@ -27,22 +31,24 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
 
         lateinit var plugins: Plugins
         lateinit var themes: Themes
+        lateinit var utilities: Utilities
     }
 
-    private fun initialize() {
+    private fun initialize(param: XC_LoadPackage.LoadPackageParam) {
         fs = FileSystem()
         settings = Settings()
         cache = Cache()
 
         plugins = Plugins()
         themes = Themes()
+        utilities = Utilities(param)
     }
 
     override fun handleLoadPackage(param: XC_LoadPackage.LoadPackageParam) = with(param) {
         if (packageName == "com.google.android.webview") return
 
         info = appInfo
-        initialize()
+        initialize(param)
 
         // Don't load bundle if not configured to do so.
         if (!(settings.get("enmity", "loader.enabled", true) as Boolean)) {
@@ -117,18 +123,59 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
             }
 
             override fun afterHookedMethod(param: MethodHookParam) {
+                val bundle = File(fs.path, "bundle.js")
+
+                if (!bundle.exists() || Updater.hasUpdate()) {
+                    try {
+                        val url = URL(Updater.getDownloadURL())
+                        val connection = url.openConnection() as HttpURLConnection
+
+                        with (connection) {
+                            defaultUseCaches = false
+                            useCaches = false
+                            connectTimeout = 2000
+                            readTimeout = 2000
+                        }
+
+                        if (connection.responseCode != 200) {
+                            throw Error("Bundle request failed with status ${connection.responseCode}")
+                        }
+
+                        val body = connection.inputStream.readBytes()
+
+                        bundle.writeBytes(body)
+                    } catch (e: Exception) {
+                        Log.wtf("Enmity", "Failed to download bundle. $e")
+
+                        if (!bundle.exists()) {
+                            Utilities.alert("Failed to load Enmity's bundle. Please report this to the developers.")
+                            Cache.purge()
+                            return
+                        } else {
+                            Utilities.alert("Bundle failed to update, loading out of date bundle.")
+                        }
+                    }
+                }
+
+                if (!bundle.exists()) {
+                    Utilities.alert("Bundle not found, please report this to the developers.")
+                    Cache.purge()
+                    return
+                }
+
                 try {
                     Log.i("Enmity", "Attempting to execute bundle...")
 
                     XposedBridge.invokeOriginalMethod(
-                        loadScriptFromAssets,
+                        loadScriptFromFile,
                         param.thisObject,
-                        arrayOf(resources.assets, "assets://js/bundle.js", false)
+                        arrayOf(bundle.path, bundle.path, false)
                     )
 
                     Log.i("Enmity", "Bundle successfully executed.")
                 } catch (e: Throwable) {
                     Log.wtf("Enmity", "Failed to execute bundle. $e")
+                    Utilities.alert("Failed to load Enmity's bundle. Please report this to the developers.")
                 }
 
                 Cache.purge()
