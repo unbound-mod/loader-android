@@ -3,6 +3,7 @@ package app.unbound.android
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import com.github.ajalt.colormath.Color
 import com.github.ajalt.colormath.parseOrNull
@@ -44,9 +45,11 @@ class Utilities(param: XC_LoadPackage.LoadPackageParam) {
                     alert.setTitle("Unbound")
                     alert.setMessage(description)
 
-                    // TODO: Add Discord Server button & Ok
-                    alert.setPositiveButton("Yes", null)
-                    alert.setNegativeButton("No", null)
+                    alert.setPositiveButton("Okay", null)
+                    alert.setNegativeButton("Discord Server") { _, _ ->
+                        val link = Intent(Intent.ACTION_VIEW, Uri.parse(Constants.DISCORD_SERVER))
+                        activity.startActivity(link)
+                    }
 
                     alert.show()
                 }

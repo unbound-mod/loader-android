@@ -36,6 +36,8 @@ data class Authors (
 
 class Constants {
     companion object {
+        const val DISCORD_SERVER = "https://discord.com/invite/rMdzhWUaGT"
+
         const val CLASS = "com.facebook.react.bridge.CatalystInstanceImpl"
         const val ACTIVITY_CLASS = "android.app.Instrumentation"
         const val LIGHT_THEME = "com.discord.theme.LightTheme"
