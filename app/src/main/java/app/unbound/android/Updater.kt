@@ -1,9 +1,9 @@
-package app.unbound.xposed
+package app.unbound.android
 
 class Updater {
     companion object {
         fun hasUpdate(): Boolean {
-            return false
+//            return false
             if (Unbound.settings.get("unbound", "loader.update.force", false) as Boolean) {
                 return true
             }

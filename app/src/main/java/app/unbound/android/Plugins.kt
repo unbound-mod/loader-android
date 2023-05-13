@@ -1,4 +1,4 @@
-package app.unbound.xposed
+package app.unbound.android
 
 class Plugins : Manager() {
     init {

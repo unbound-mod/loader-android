@@ -1,4 +1,4 @@
-package app.unbound.xposed
+package app.unbound.android
 
 import android.app.Activity
 import android.app.AlertDialog

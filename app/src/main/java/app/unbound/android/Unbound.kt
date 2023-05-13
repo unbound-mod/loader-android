@@ -1,4 +1,4 @@
-package app.unbound.xposed
+package app.unbound.android
 
 import android.content.res.AssetManager
 import android.content.res.XModuleResources

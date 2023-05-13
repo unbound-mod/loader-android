@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "app.unbound.xposed"
+    namespace = "app.unbound.android"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "app.unbound.xposed"
+        applicationId = "app.unbound.android"
         minSdk = 24
         targetSdk = 33
         versionCode = 6
@@ -36,7 +36,7 @@ android {
         freeCompilerArgs += "-Xcontext-receivers"
     }
 
-    namespace = "app.unbound.xposed"
+    namespace = "app.unbound.android"
 }
 
 dependencies {

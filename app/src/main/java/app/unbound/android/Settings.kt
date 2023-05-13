@@ -1,4 +1,4 @@
-package app.unbound.xposed
+package app.unbound.android
 
 import org.json.JSONObject
 import java.io.File

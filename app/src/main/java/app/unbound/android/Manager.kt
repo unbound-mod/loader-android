@@ -1,4 +1,4 @@
-package app.unbound.xposed
+package app.unbound.android
 
 import android.util.Log
 import java.io.File
