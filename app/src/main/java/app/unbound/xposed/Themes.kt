@@ -1,4 +1,4 @@
-package app.enmity.xposed
+package app.unbound.xposed
 
 import android.util.Log
 import de.robv.android.xposed.XC_MethodHook
@@ -12,8 +12,8 @@ class Themes : Manager() {
     init {
         this.initialize()
 
-        val isEnabled = Enmity.settings.get("enmity", "loader.enabled", true) as Boolean
-        val isInRecovery = Enmity.settings.get("enmity", "recovery", false) as Boolean
+        val isEnabled = Unbound.settings.get("unbound", "loader.enabled", true) as Boolean
+        val isInRecovery = Unbound.settings.get("unbound", "recovery", false) as Boolean
 
         if (isEnabled && !isInRecovery) {
             this.apply()
@@ -33,11 +33,11 @@ class Themes : Manager() {
     }
 
     override fun handleBundle(bundle: String): ThemeJSON {
-        return Enmity.gson.fromJson(bundle, ThemeJSON::class.java)
+        return Unbound.gson.fromJson(bundle, ThemeJSON::class.java)
     }
 
     private fun getApplied(): Theme? {
-        val key = Enmity.settings.get("theme-states", "applied", null)
+        val key = Unbound.settings.get("theme-states", "applied", null)
         if (key == "" || key !is String) return null
 
         val theme = this.addons.find { t -> (t as Theme).manifest.id == key }
@@ -63,7 +63,7 @@ class Themes : Manager() {
 
         if (addon.bundle.semantic != null) {
             val colors = addon.bundle.semantic.asJsonObject.entrySet()
-            val loader = Enmity.info.classLoader
+            val loader = Unbound.info.classLoader
 
             val dark = loader.loadClass(Constants.DARK_THEME)
             val light = loader.loadClass(Constants.LIGHT_THEME)
@@ -80,7 +80,6 @@ class Themes : Manager() {
 
                 color.forEachIndexed { index, v ->
                     try {
-                        Log.i("Enmity", method)
                         val string = color.get(index)
                         val parsed = Utilities.parseColor(string.asString) ?: return@forEachIndexed
 
@@ -98,7 +97,7 @@ class Themes : Manager() {
                             )
                         }
                     } catch (e: Exception) {
-                        Log.wtf("Enmity", "Failed to apply theme color $key, $v")
+                        Log.wtf("Unbound", "Failed to apply theme color $key, $v")
                     }
                 }
             }

@@ -1,4 +1,4 @@
-package app.enmity.xposed
+package app.unbound.xposed
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -34,14 +34,14 @@ class Utilities(param: XC_LoadPackage.LoadPackageParam) {
             try {
                 val activity = Activities.current.get()
                 if (activity == null) {
-                    Log.wtf("Enmity", "Failed to alert: No hooked activity found.")
+                    Log.wtf("Unbound", "Failed to alert: No hooked activity found.")
                     return
                 }
 
                 activity.runOnUiThread {
                     val alert = AlertDialog.Builder(activity)
 
-                    alert.setTitle("Enmity")
+                    alert.setTitle("Unbound")
                     alert.setMessage(description)
 
                     // TODO: Add Discord Server button & Ok
@@ -51,7 +51,7 @@ class Utilities(param: XC_LoadPackage.LoadPackageParam) {
                     alert.show()
                 }
             } catch(e: Exception) {
-                Log.wtf("Enmity", "Failed to alert: $e")
+                Log.wtf("Unbound", "Failed to alert: $e")
             }
         }
 

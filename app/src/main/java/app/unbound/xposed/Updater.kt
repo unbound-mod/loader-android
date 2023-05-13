@@ -1,9 +1,10 @@
-package app.enmity.xposed
+package app.unbound.xposed
 
 class Updater {
     companion object {
         fun hasUpdate(): Boolean {
-            if (Enmity.settings.get("enmity", "loader.update.force", false) as Boolean) {
+            return false
+            if (Unbound.settings.get("unbound", "loader.update.force", false) as Boolean) {
                 return true
             }
 
@@ -12,7 +13,7 @@ class Updater {
         }
 
         fun getDownloadURL(): String {
-            return Enmity.settings.get("enmity", "loader.update.url", "http://192.168.0.35:8080/bundle.js") as String
+            return Unbound.settings.get("unbound", "loader.update.url", "http://192.168.0.35:8080/bundle.js") as String
         }
     }
 }

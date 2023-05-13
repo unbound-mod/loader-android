@@ -1,4 +1,4 @@
-package app.enmity.xposed
+package app.unbound.xposed
 
 import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
@@ -15,7 +15,8 @@ data class Theme (
 
 data class ThemeJSON (
     @SerializedName("raw") val raw: JsonElement?,
-    @SerializedName("semantic") val semantic: JsonElement?
+    @SerializedName("semantic") val semantic: JsonElement?,
+    @SerializedName("background") val background: JsonElement?
 )
 
 data class Manifest (

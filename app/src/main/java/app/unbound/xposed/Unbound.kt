@@ -1,4 +1,4 @@
-package app.enmity.xposed
+package app.unbound.xposed
 
 import android.content.res.AssetManager
 import android.content.res.XModuleResources
@@ -17,7 +17,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
+class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
     companion object {
         var gson: Gson = GsonBuilder().setPrettyPrinting().create()
 
@@ -50,8 +50,8 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
         initialize(param)
 
         // Don't load bundle if not configured to do so.
-        if (!(settings.get("enmity", "loader.enabled", true) as Boolean)) {
-            Log.i("Enmity", "Loader is disabled, skipping injection.")
+        if (!(settings.get("unbound", "loader.enabled", true) as Boolean)) {
+            Log.i("Unbound", "Loader is disabled, skipping injection.")
             return
         }
 
@@ -74,7 +74,7 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
         val patch = object : XC_MethodHook() {
             override fun beforeHookedMethod(param: MethodHookParam) {
                 try {
-                    Log.i("Enmity", "Attempting to execute modules patch...")
+                    Log.i("Unbound", "Attempting to execute modules patch...")
 
                     XposedBridge.invokeOriginalMethod(
                         loadScriptFromAssets,
@@ -82,14 +82,14 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
                         arrayOf(resources.assets, "assets://js/modules.js", false)
                     )
 
-                    Log.i("Enmity", "Executed modules patch.")
+                    Log.i("Unbound", "Executed modules patch.")
                 } catch (e: Throwable) {
-                    Log.wtf("Enmity", "Modules patch injection failed, expect issues. $e")
+                    Log.wtf("Unbound", "Modules patch injection failed, expect issues. $e")
                 }
 
-                if ((settings.get("enmity", "loader.devtools", false) as Boolean)) {
+                if ((settings.get("unbound", "loader.devtools", false) as Boolean)) {
                     try {
-                        Log.i("Enmity", "Attempting to execute DevTools bundle...")
+                        Log.i("Unbound", "Attempting to execute DevTools bundle...")
 
                         XposedBridge.invokeOriginalMethod(
                             loadScriptFromAssets,
@@ -97,14 +97,14 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
                             arrayOf(resources.assets, "assets://js/devtools.js", false)
                         )
 
-                        Log.i("Enmity", "Successfully executed DevTools bundle.")
+                        Log.i("Unbound", "Successfully executed DevTools bundle.")
                     } catch (e: Throwable) {
-                        Log.wtf("Enmity", "Failed patch injection failed, expect issues. $e")
+                        Log.wtf("Unbound", "Failed patch injection failed, expect issues. $e")
                     }
                 }
 
                 try {
-                    Log.i("Enmity", "Pre-loading settings, plugins and themes...")
+                    Log.i("Unbound", "Pre-loading settings, plugins and themes...")
                     val bundle = usePreload()
 
                     XposedBridge.invokeOriginalMethod(
@@ -113,9 +113,9 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
                         arrayOf(bundle, bundle, false)
                     )
 
-                    Log.i("Enmity", "Pre-loaded settings, plugins and themes.")
+                    Log.i("Unbound", "Pre-loaded settings, plugins and themes.")
                 } catch (e: Throwable) {
-                    Log.wtf("Enmity", "Failed to pre-load settings, plugins and themes. $e")
+                    Log.wtf("Unbound", "Failed to pre-load settings, plugins and themes. $e")
                 }
             }
 
@@ -142,10 +142,10 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
 
                         bundle.writeBytes(body)
                     } catch (e: Exception) {
-                        Log.wtf("Enmity", "Failed to download bundle. $e")
+                        Log.wtf("Unbound", "Failed to download bundle. $e")
 
                         if (!bundle.exists()) {
-                            Utilities.alert("Failed to load Enmity's bundle. Please report this to the developers.")
+                            Utilities.alert("Failed to load Unbound's bundle. Please report this to the developers.")
                             Cache.purge()
                             return
                         } else {
@@ -161,7 +161,7 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
                 }
 
                 try {
-                    Log.i("Enmity", "Attempting to execute bundle...")
+                    Log.i("Unbound", "Attempting to execute bundle...")
 
                     XposedBridge.invokeOriginalMethod(
                         loadScriptFromFile,
@@ -169,10 +169,10 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
                         arrayOf(bundle.path, bundle.path, false)
                     )
 
-                    Log.i("Enmity", "Bundle successfully executed.")
+                    Log.i("Unbound", "Bundle successfully executed.")
                 } catch (e: Throwable) {
-                    Log.wtf("Enmity", "Failed to execute bundle. $e")
-                    Utilities.alert("Failed to load Enmity's bundle. Please report this to the developers.")
+                    Log.wtf("Unbound", "Failed to execute bundle. $e")
+                    Utilities.alert("Failed to load Unbound's bundle. Please report this to the developers.")
                 }
 
                 Cache.purge()
@@ -192,8 +192,8 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
     override fun handleInitPackageResources(param: XC_InitPackageResources.InitPackageResourcesParam) = with (param) {
         if (packageName == "com.google.android.webview") return
 
-        val isEnabled = settings.get("enmity", "loader.enabled", true) as Boolean
-        val isInRecovery = settings.get("enmity", "recovery", false) as Boolean
+        val isEnabled = settings.get("unbound", "loader.enabled", true) as Boolean
+        val isInRecovery = settings.get("unbound", "recovery", false) as Boolean
 
         if (!isEnabled || isInRecovery) return
 
@@ -201,7 +201,7 @@ class Enmity: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPack
             try {
                 res.setReplacement("com.discord", "color", key, value)
             } catch (e: Exception) {
-                Log.wtf("Enmity", "No raw color found for $key")
+                Log.wtf("Unbound", "No raw color found for $key")
             }
         }
     }

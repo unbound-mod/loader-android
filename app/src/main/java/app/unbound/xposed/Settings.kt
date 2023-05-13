@@ -1,4 +1,4 @@
-package app.enmity.xposed
+package app.unbound.xposed
 
 import org.json.JSONObject
 import java.io.File
@@ -36,9 +36,9 @@ class Settings {
     }
 
     init {
-        val folder = File(Enmity.info.appInfo.dataDir, "files")
-        val enmity = File(folder, "Enmity")
-        val file = File(enmity, "settings.json")
+        val folder = File(Unbound.info.appInfo.dataDir, "files")
+        val unbound = File(folder, "Unbound").also { it.mkdirs() }
+        val file = File(unbound, "settings.json")
 
         path = file.path
 

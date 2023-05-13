@@ -1,4 +1,4 @@
-package app.enmity.xposed
+package app.unbound.xposed
 
 import java.io.File
 
@@ -7,7 +7,7 @@ class FileSystem {
     var path: String
 
     fun getAsset(file: String): String {
-        val stream = Enmity.resources.assets.open(file)
+        val stream = Unbound.resources.assets.open(file)
         return stream.bufferedReader().use { it.readText() }
     }
 
@@ -16,9 +16,9 @@ class FileSystem {
      * non-existing directories on android
      */
     init {
-        val files = File(Enmity.info.appInfo.dataDir, "files").also { it.mkdirs() }.path
+        val files = File(Unbound.info.appInfo.dataDir, "files").also { it.mkdirs() }.path
 
-        this.path = File(files, "Enmity").also { it.mkdirs() }.path
+        this.path = File(files, "Unbound").also { it.mkdirs() }.path
 
         File(this.path, "Plugins").also { it.mkdirs() }
         File(this.path, "Themes").also { it.mkdirs() }

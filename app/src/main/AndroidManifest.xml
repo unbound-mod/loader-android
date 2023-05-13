@@ -8,7 +8,7 @@
         android:supportsRtl="true" >
 
         <meta-data android:name="xposedmodule" android:value="true" />
-        <meta-data android:name="xposeddescription" android:value="Injects Enmity into Discord" />
+        <meta-data android:name="xposeddescription" android:value="Discord mobile client aimed at providing the user control, stability and customizability." />
         <meta-data android:name="xposedminversion" android:value="82" />
         <meta-data android:name="xposedscope" android:value="com.discord" />
 

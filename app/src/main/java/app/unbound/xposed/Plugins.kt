@@ -1,4 +1,4 @@
-package app.enmity.xposed
+package app.unbound.xposed
 
 class Plugins : Manager() {
     init {

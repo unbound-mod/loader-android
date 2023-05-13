@@ -6,5 +6,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = "Enmity"
+rootProject.name = "Unbound"
 include(":app")

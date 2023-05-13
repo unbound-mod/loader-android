@@ -1,8 +1,8 @@
-this.ENMITY_LOADER = {
+this.UNBOUND_LOADER = {
 	platform: 'Android',
 	origin: 'Xposed'
 };
 
-this.ENMITY_SETTINGS = #settings#
-this.ENMITY_PLUGINS = #plugins#
-this.ENMITY_THEMES = #themes#
+this.UNBOUND_SETTINGS = #settings#
+this.UNBOUND_PLUGINS = #plugins#
+this.UNBOUND_THEMES = #themes#
