@@ -13,8 +13,6 @@ import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import java.io.File
-import java.net.HttpURLConnection
-import java.net.URL
 
 
 class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
@@ -124,23 +122,7 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
 
                 if (!bundle.exists() || Updater.hasUpdate()) {
                     try {
-                        val url = URL(Updater.getDownloadURL())
-                        val connection = url.openConnection() as HttpURLConnection
-
-                        with (connection) {
-                            defaultUseCaches = false
-                            useCaches = false
-                            connectTimeout = 2000
-                            readTimeout = 2000
-                        }
-
-                        if (connection.responseCode != 200) {
-                            throw Error("Bundle request failed with status ${connection.responseCode}")
-                        }
-
-                        val body = connection.inputStream.readBytes()
-
-                        bundle.writeBytes(body)
+                        fs.download(Updater.getDownloadURL(), bundle)
                     } catch (e: Exception) {
                         Log.wtf("Unbound", "Failed to download bundle. $e")
 

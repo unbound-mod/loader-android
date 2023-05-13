@@ -1,15 +1,51 @@
 package app.unbound.android
 
+import android.util.Log
+import java.net.HttpURLConnection
+import java.net.URL
+
 class Updater {
     companion object {
         fun hasUpdate(): Boolean {
-//            return false
+            Log.i("Unbound", "Checking for updates...")
+
             if (Unbound.settings.get("unbound", "loader.update.force", false) as Boolean) {
                 return true
             }
 
-            // TODO: Implement HEAD ETag fetch logic here
-            return true
+            try {
+                val url = URL(getDownloadURL())
+                val connection = url.openConnection() as HttpURLConnection
+
+                with (connection) {
+                    defaultUseCaches = false
+                    useCaches = false
+                    requestMethod = "HEAD"
+                    connectTimeout = 2000
+                    readTimeout = 2000
+                }
+
+                if (connection.responseCode != 200) {
+                    throw Error("Bundle request failed with status ${connection.responseCode}")
+                }
+
+                val tag = Unbound.settings.get("unbound", "loader.update.etag", null)
+                val header = connection.getHeaderField("etag")
+
+                Unbound.settings.set("unbound", "loader.update.etag", header)
+
+                val res = header != tag
+                if (res) {
+                    Log.i("Unbound", "Detected new update.")
+                } else {
+                    Log.i("Unbound", "No updates found.")
+                }
+
+                return res
+            } catch (e: Exception) {
+                Log.i("Unbound", "No updates found as the server failed to respond with a valid ETag.")
+                return false
+            }
         }
 
         fun getDownloadURL(): String {
