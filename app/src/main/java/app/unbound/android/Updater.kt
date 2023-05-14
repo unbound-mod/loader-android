@@ -44,6 +44,7 @@ class Updater {
                 return res
             } catch (e: Exception) {
                 Log.i("Unbound", "No updates found as the server failed to respond with a valid ETag.")
+                Utilities.alert("Failed to check for updates, bundle may be out of date. Please report this to the developers.")
                 return false
             }
         }
