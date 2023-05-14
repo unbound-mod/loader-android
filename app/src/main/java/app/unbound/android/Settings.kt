@@ -36,7 +36,7 @@ class Settings {
         for (key in keys) {
             if (keys.indexOf(key) + 1 == keys.size) {
                 (result as JSONObject).put(key, value)
-                continue
+                break
             }
 
             result = try {
