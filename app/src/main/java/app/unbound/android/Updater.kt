@@ -6,6 +6,8 @@ import java.net.URL
 
 class Updater {
     companion object {
+        var etag: String = ""
+
         fun hasUpdate(): Boolean {
             Log.i("Unbound", "Checking for updates...")
 
@@ -32,14 +34,14 @@ class Updater {
                 val tag = Unbound.settings.get("unbound", "loader.update.etag", null)
                 val header = connection.getHeaderField("etag")
 
-                Unbound.settings.set("unbound", "loader.update.etag", header)
-
                 val res = header != tag
                 if (res) {
                     Log.i("Unbound", "Detected new update.")
                 } else {
                     Log.i("Unbound", "No updates found.")
                 }
+
+                etag = header
 
                 return res
             } catch (e: Exception) {
