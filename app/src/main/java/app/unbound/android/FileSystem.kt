@@ -31,8 +31,6 @@ class FileSystem {
         val body = connection.inputStream.readBytes()
 
         file.writeBytes(body)
-
-        Unbound.settings.set("unbound", "loader.update.etag", Updater.etag)
     }
 
     /*

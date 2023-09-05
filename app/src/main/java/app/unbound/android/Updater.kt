@@ -12,6 +12,7 @@ class Updater {
             Log.i("Unbound", "Checking for updates...")
 
             if (Unbound.settings.get("unbound", "loader.update.force", false) as Boolean) {
+                Log.i("Unbound", "[Updater] Forcing update due to config. Forcing update due to config.")
                 return true
             }
 

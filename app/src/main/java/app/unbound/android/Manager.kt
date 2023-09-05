@@ -21,9 +21,20 @@ open class Manager {
 
                 val deletion = File(path, ".delete")
                 if (deletion.exists()) {
-                    Log.i("Unbound", "[${this.getType()}] Deleting $file as it's pending deletion.")
-                    path.deleteRecursively()
-                    continue
+                    val pending = deletion.readText()
+
+                    if (pending === "true") {
+                        Log.i("Unbound", "[${this.getType()}] Deleting $file as it's pending deletion.")
+
+                        try {
+                            path.deleteRecursively()
+                            Log.i("Unbound", "[${this.getType()}] Deleted $file.");
+                        } catch (e: Exception) {
+                            Log.wtf("Unbound", "[${this.getType()}] Failed to delete $file. $e");
+                        }
+
+                        continue
+                    }
                 }
 
                 val manifest = File(path, "manifest.json")

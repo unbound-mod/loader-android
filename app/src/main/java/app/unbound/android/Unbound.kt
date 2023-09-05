@@ -80,7 +80,7 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
                         arrayOf(resources.assets, "assets://js/modules.js", false)
                     )
 
-                    Log.i("Unbound", "Executed modules patch.")
+                    Log.i("Unbound", "Successfully executed modules patch.")
                 } catch (e: Throwable) {
                     Log.wtf("Unbound", "Modules patch injection failed, expect issues. $e")
                 }
@@ -97,7 +97,7 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
 
                         Log.i("Unbound", "Successfully executed DevTools bundle.")
                     } catch (e: Throwable) {
-                        Log.wtf("Unbound", "Failed patch injection failed, expect issues. $e")
+                        Log.wtf("Unbound", "React DevTools failed to initialize. $e")
                     }
                 }
 
@@ -122,12 +122,17 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
 
                 if (!bundle.exists() || Updater.hasUpdate()) {
                     try {
-                        fs.download(Updater.getDownloadURL(), bundle)
+                        val url = Updater.getDownloadURL()
+
+                        Log.i("Unbound", "Downloading bundle...")
+                        fs.download(url, bundle)
+                        Unbound.settings.set("unbound", "loader.update.etag", Updater.etag)
+                        Log.i("Unbound", "Bundle downloaded.")
                     } catch (e: Exception) {
                         Log.wtf("Unbound", "Failed to download bundle. $e")
 
                         if (!bundle.exists()) {
-                            Utilities.alert("Failed to load Unbound's bundle. Please report this to the developers.")
+                            Utilities.alert("Bundle failed to download, please report this to the developers.")
                             Cache.purge()
                             return
                         } else {
