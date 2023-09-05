@@ -1,5 +1,6 @@
 package app.unbound.android
 
+import android.util.Log
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
@@ -14,6 +15,8 @@ class FileSystem {
     }
 
     fun download(url: String, file: File) {
+        Log.i("Unbound", "Downloading file from $url to ${file.path}")
+
         val url = URL(url)
         val connection = url.openConnection() as HttpURLConnection
 
