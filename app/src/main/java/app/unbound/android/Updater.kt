@@ -17,7 +17,7 @@ class Updater {
             }
 
             try {
-                val url = URL(getDownloadURL())
+                val url = getDownloadURL()
                 val connection = url.openConnection() as HttpURLConnection
 
                 with (connection) {
@@ -52,8 +52,10 @@ class Updater {
             }
         }
 
-        fun getDownloadURL(): String {
-            return Unbound.settings.get("unbound", "loader.update.url", "http://192.168.0.35:8080/bundle.js") as String
+        fun getDownloadURL(): URL {
+            val url = Unbound.settings.get("unbound", "loader.update.url", "http://192.168.0.35:8080/bundle.js") as String
+
+            return URL(url)
         }
     }
 }

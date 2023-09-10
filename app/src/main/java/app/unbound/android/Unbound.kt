@@ -29,6 +29,7 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
         lateinit var plugins: Plugins
         lateinit var themes: Themes
         lateinit var utilities: Utilities
+        lateinit var fonts: Fonts
     }
 
     private fun initialize(param: XC_LoadPackage.LoadPackageParam) {
@@ -36,6 +37,7 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
         settings = Settings()
         cache = Cache()
 
+        fonts = Fonts()
         plugins = Plugins()
         themes = Themes()
         utilities = Utilities(param)

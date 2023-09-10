@@ -14,10 +14,9 @@ class FileSystem {
         return stream.bufferedReader().use { it.readText() }
     }
 
-    fun download(url: String, file: File) {
+    fun download(url: URL, file: File) {
         Log.i("Unbound", "Downloading file from $url to ${file.path}")
 
-        val url = URL(url)
         val connection = url.openConnection() as HttpURLConnection
 
         with (connection) {
@@ -47,5 +46,6 @@ class FileSystem {
 
         File(this.path, "Plugins").also { it.mkdirs() }
         File(this.path, "Themes").also { it.mkdirs() }
+        File(this.path, "Fonts").also { it.mkdirs() }
     }
 }
