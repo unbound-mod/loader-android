@@ -18,6 +18,8 @@ class Fonts {
     }
 
     init {
+
+
         XposedHelpers.findAndHookMethod(TextView::class.java, "setTypeface", Typeface::class.java, Int::class.javaPrimitiveType,  object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {

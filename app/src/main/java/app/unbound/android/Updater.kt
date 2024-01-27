@@ -9,7 +9,7 @@ class Updater {
         var etag: String = ""
 
         fun hasUpdate(): Boolean {
-            Log.i("Unbound", "Checking for updates...")
+            Log.i("Unbound", "[Updater] Checking for updates...")
 
             if (Unbound.settings.get("unbound", "loader.update.force", false) as Boolean) {
                 Log.i("Unbound", "[Updater] Forcing update due to config. Forcing update due to config.")
@@ -37,17 +37,17 @@ class Updater {
 
                 val res = header != tag
                 if (res) {
-                    Log.i("Unbound", "Detected new update.")
+                    Log.i("Unbound", "[Updater] Detected new update.")
                 } else {
-                    Log.i("Unbound", "No updates found.")
+                    Log.i("Unbound", "[Updater] No updates found.")
                 }
 
                 etag = header
 
                 return res
             } catch (e: Exception) {
-                Log.i("Unbound", "No updates found as the server failed to respond with a valid ETag.")
-                Utilities.alert("Failed to check for updates, bundle may be out of date. Please report this to the developers.")
+                Log.i("Unbound", "[Updater] No updates found as the server failed to respond with a valid ETag.")
+                Utilities.alert("[Updater] Failed to check for updates, bundle may be out of date. Please report this to the developers.")
                 return false
             }
         }
