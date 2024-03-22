@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "app.unbound.android"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "app.unbound.android"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 6
         versionName = "1.0.0"
     }
@@ -43,5 +43,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation("com.github.ajalt.colormath:colormath:latest.release")
     implementation("com.google.code.gson:gson:latest.release")
+    implementation("androidx.core:core-ktx:+")
     compileOnly("de.robv.android.xposed:api:82")
 }

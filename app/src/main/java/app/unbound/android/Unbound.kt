@@ -79,7 +79,7 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
                     XposedBridge.invokeOriginalMethod(
                         loadScriptFromAssets,
                         param.thisObject,
-                        arrayOf(resources.assets, "assets://js/modules.js", false)
+                        arrayOf(resources.assets, "assets://js/modules.bundle", false)
                     )
 
                     Log.i("Unbound", "Successfully executed modules patch.")
@@ -94,7 +94,7 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
                         XposedBridge.invokeOriginalMethod(
                             loadScriptFromAssets,
                             param.thisObject,
-                            arrayOf(resources.assets, "assets://js/devtools.js", false)
+                            arrayOf(resources.assets, "assets://js/devtools.bundle", false)
                         )
 
                         Log.i("Unbound", "Successfully executed DevTools bundle.")
@@ -120,7 +120,7 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
             }
 
             override fun afterHookedMethod(param: MethodHookParam) {
-                val bundle = File(fs.path, "bundle.js")
+                val bundle = File(fs.path, "unbound.bundle")
 
                 if (!bundle.exists() || Updater.hasUpdate()) {
                     try {
