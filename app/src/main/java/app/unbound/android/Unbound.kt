@@ -120,7 +120,7 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
             }
 
             override fun afterHookedMethod(param: MethodHookParam) {
-                val bundle = File(fs.path, "bundle.js")
+                val bundle = File(fs.path, "unbound.bundle")
 
                 if (!bundle.exists() || Updater.hasUpdate()) {
                     try {
