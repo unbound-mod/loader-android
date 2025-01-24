@@ -1,8 +1,8 @@
 package app.unbound.android
 
 import android.util.Log
-import java.net.HttpURLConnection
 import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 class Updater {
     companion object {
@@ -18,7 +18,7 @@ class Updater {
 
             try {
                 val url = getDownloadURL()
-                val connection = url.openConnection() as HttpURLConnection
+                val connection = url.openConnection() as HttpsURLConnection
 
                 with (connection) {
                     defaultUseCaches = false
@@ -53,7 +53,7 @@ class Updater {
         }
 
         fun getDownloadURL(): URL {
-            val url = Unbound.settings.get("unbound", "loader.update.url", "http://192.168.0.35:8080/unbound.bundle") as String
+            val url = Unbound.settings.get("unbound", "loader.update.url", "https://raw.githubusercontent.com/unbound-mod/builds/refs/heads/main/unbound.js") as String
 
             return URL(url)
         }
