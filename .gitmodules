@@ -1,0 +1,3 @@
+[submodule "app/src/main/assets/js/resources"]
+	path = app/src/main/assets/js/resources
+	url = https://github.com/unbound-mod/bootstrap
