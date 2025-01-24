@@ -8,6 +8,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven(url = "https://api.xposed.info/")
         jcenter()
     }
 }

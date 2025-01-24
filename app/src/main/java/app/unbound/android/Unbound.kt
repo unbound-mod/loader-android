@@ -79,7 +79,7 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
                     XposedBridge.invokeOriginalMethod(
                         loadScriptFromAssets,
                         param.thisObject,
-                        arrayOf(resources.assets, "assets://js/modules.bundle", false)
+                        arrayOf(resources.assets, "assets://js/resources/modules.js", false)
                     )
 
                     Log.i("Unbound", "Successfully executed modules patch.")
@@ -94,7 +94,7 @@ class Unbound: IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
                         XposedBridge.invokeOriginalMethod(
                             loadScriptFromAssets,
                             param.thisObject,
-                            arrayOf(resources.assets, "assets://js/devtools.bundle", false)
+                            arrayOf(resources.assets, "assets://js/resources/devtools.js", false)
                         )
 
                         Log.i("Unbound", "Successfully executed DevTools bundle.")

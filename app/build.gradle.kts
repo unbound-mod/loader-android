@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "app.unbound.android"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "app.unbound.android"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 6
         versionName = "1.0.0"
     }
