@@ -16,6 +16,7 @@ data class Theme (
 data class ThemeJSON (
     @SerializedName("raw") val raw: JsonElement?,
     @SerializedName("semantic") val semantic: JsonElement?,
+    @SerializedName("type") val type: JsonElement?,
     @SerializedName("background") val background: JsonElement?
 )
 
@@ -40,8 +41,6 @@ class Constants {
 
         const val CLASS = "com.facebook.react.bridge.CatalystInstanceImpl"
         const val ACTIVITY_CLASS = "android.app.Instrumentation"
-        const val LIGHT_THEME = "com.discord.theme.LightTheme"
-        const val DARK_THEME = "com.discord.theme.DarkTheme"
 
         const val FILE_LOAD = "jniLoadScriptFromFile"
         const val ASSET_LOAD = "jniLoadScriptFromAssets"

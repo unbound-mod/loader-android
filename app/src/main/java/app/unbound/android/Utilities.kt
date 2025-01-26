@@ -58,10 +58,10 @@ class Utilities(param: XC_LoadPackage.LoadPackageParam) {
             }
         }
 
-        fun parseColor(color: String): Int? {
-            val parsed = Color.parseOrNull(color) ?: return null
-
-            return parsed.toSRGB().toRGBInt().argb.toInt()
+        fun parseColor(color: String, opacity: Float? = null): Int? {
+            return Color.parseOrNull(color)?.toSRGB()?.let { srgb ->
+                srgb.copy(alpha = (opacity ?: srgb.alpha).coerceIn(0f, 1f)).toRGBInt().argb.toInt()
+            }
         }
     }
 }
